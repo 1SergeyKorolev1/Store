@@ -1,8 +1,9 @@
 {% extends 'catalog/base.html' %}
-
+{% load my_tags %}
 {% block content %}
 <div class="pricing-header p-3 pb-md-4 mx-auto text-center col-10">
     <h2 class="display-4 fw-normal">{{ title_name|title }}</h2>
+    <img src="{{ product.image | media_filter }}" class="col-2">
 </div>
 <ul class="col-10 mx-auto">
     <li>Название: {{ title_name|title }}</li>
