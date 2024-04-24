@@ -9,7 +9,7 @@
     {% for product in product_list %}
     <div class="col">
         <div class="card shadow-sm">
-            <img src="{{ product.image | media_filter }}">
+            <img src="{{ product.image | media_filter }}" style="height: 200px; width: max-content">
             <div class="card-body">
                 <p class="card-text">Название: {{ product.name|title }}</p>
                 <p class="card-text">Категория: {{ product.category.name|title }}</p>
