@@ -10,4 +10,8 @@
     <li>Описание: {{ product.description }}</li>
     <li>цена: {{ product.price }} руб.</li>
 </ul>
+<div class="col-10 mx-auto">
+    <a type="button" class="btn btn-sm btn-outline-secondary"
+       href="{% url 'catalog:home' %}">Назад</a>
+</div>
 {% endblock %}
