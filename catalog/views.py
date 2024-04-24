@@ -1,12 +1,21 @@
-from django.shortcuts import render
-import os
 import json
+import os
+
+from django.shortcuts import render
+
+from catalog.models import Product
 
 
 # Create your views here.
 
 def home(request):
-    return render(request, 'catalog/home.html')
+    products_list = Product.objects.all()
+    context = {
+        'product_list': products_list,
+        'title_name': 'Store',
+    }
+
+    return render(request, 'catalog/home.html', context)
 
 
 def contact(request):
@@ -30,4 +39,8 @@ def contact(request):
                 with open(json_f, 'w') as f_1:
                     json.dump(list_, f_1)
 
-    return render(request, 'catalog/contact.html')
+    context = {
+        'title_name': 'Контакты',
+    }
+
+    return render(request, 'catalog/contact.html', context)
