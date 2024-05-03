@@ -35,7 +35,7 @@ class PublicationDetailView(DetailView):
         self.object.counter += 1
         self.object.save()
         if self.object.counter >= 100:
-            send_message_mail(emails=['Sergo77644@yandex.ru',], text=f'Ура! - публикация '{self.object}' набрала 100 просмотров...')
+            send_message_mail(emails=['Sergo77644@yandex.ru',], text=f'Ура! - публикация <{self.object}> набрала 100 просмотров...')
         return self.object
 
 class PublicationUpdateView(UpdateView):
