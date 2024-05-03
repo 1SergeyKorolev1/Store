@@ -1,0 +1,11 @@
+{% extends 'catalog/base.html' %}
+{% load my_tags %}
+{% block content %}
+<div class="pricing-header p-3 pb-md-4 mx-auto text-center col-10">
+    <h1 class="display-4 fw-normal">{{ title_name|title }}</h1>
+    <p class="fs-5 text-muted">Список товаров</p>
+    <a type="button" class="btn btn-sm btn-outline-secondary"
+                           href="{% url 'catalog:create_product' %}">+</a>
+</div>
+{% include 'catalog/includes/card.html' %}
+{% endblock %}
