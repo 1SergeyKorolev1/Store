@@ -1,0 +1,15 @@
+[
+  {
+    "model": "blog.publication",
+    "pk": 6,
+    "fields": {
+      "name": "Кошачьи усы",
+      "slug": "koshachi-usyi",
+      "description": "Это совсем не усы а вибрисы по научному!..",
+      "image": "img_publication/zoo_ecosystem_exotic_wildlife_wild_animal_fauna_nature_cat_icon_259307.ico",
+      "created_at": "2024-05-03",
+      "publication_activ": true,
+      "counter": 101
+    }
+  }
+]

@@ -14,7 +14,7 @@ class Command(BaseCommand):
         Category.objects.all().delete()
         Product.objects.all().delete()
 
-        with open('fixtures/catalog_data.json', encoding='utf-8') as json_file:
+        with open('fixtures/data.json', encoding='utf-8') as json_file:
             data = json.load(json_file)
 
             product_for_create = []
