@@ -2,13 +2,14 @@ from django.urls import reverse_lazy, reverse
 from django.views.generic import CreateView, ListView, DetailView, UpdateView, DeleteView
 from blog.functions.email_yandex import send_message_mail
 from pytils.translit import slugify
-
+from blog.forms import PublicationForm
 from blog.models import Publication
 
 # Create your views here.
 class PublicationCreateView(CreateView):
     model = Publication
-    fields = ('name', 'description', 'image', 'publication_activ', 'counter')
+    form_class = PublicationForm
+    # fields = ('name', 'description', 'image', 'publication_activ', 'counter')
     success_url = reverse_lazy('blog:list')
 
     def form_valid(self, form):
@@ -40,7 +41,8 @@ class PublicationDetailView(DetailView):
 
 class PublicationUpdateView(UpdateView):
     model = Publication
-    fields = ('name', 'description', 'image', 'publication_activ', 'counter')
+    form_class = PublicationForm
+    # fields = ('name', 'description', 'image', 'publication_activ', 'counter')
     success_url = reverse_lazy('blog:list')
 
     def form_valid(self, form):

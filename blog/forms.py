@@ -1,22 +1,13 @@
 from django import forms
-from catalog.models import Product
-
-valid_list = ['казино', 'криптовалюта', 'крипта', 'биржа', 'дешево', 'бесплатно', 'обман', 'полиция', 'радар']
-class StyleFormMixin:
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        for field_name, field in self.fields.items():
-            if field.initial:
-                field.widget.attrs['class'] = 'form-check-input'
-            else:
-                field.widget.attrs['class'] = 'form-control'
+from blog.models import Publication
+from catalog.forms import valid_list, StyleFormMixin
 
 
-class ProductForm(StyleFormMixin, forms.ModelForm):
+class PublicationForm(StyleFormMixin, forms.ModelForm):
     class Meta:
-        model = Product
+        model = Publication
         # fields = '__all__'
-        fields = ('name', 'category', 'price', 'image', 'description')
+        fields = ('name', 'description', 'image', 'publication_activ', 'counter')
         # exclude = ('name')
 
     def clean_name(self):

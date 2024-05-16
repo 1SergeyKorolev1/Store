@@ -23,7 +23,7 @@ class ProductListView(ListView):
             if activity:
                 product.activ_version = activity.last().name
             else:
-                product.activ_version = 'Нет активной версии'
+                product.activ_version = '...'
 
         context['product_list'] = products
         context['title_name'] = 'Store'
