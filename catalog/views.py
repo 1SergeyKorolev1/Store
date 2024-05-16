@@ -6,7 +6,7 @@ from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import CreateView, ListView, DetailView, UpdateView, DeleteView
 from catalog.forms import ProductForm
-from catalog.models import Product
+from catalog.models import Product, Version
 
 
 # Create your views here.
@@ -15,6 +15,17 @@ class ProductListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
+        products = Product.objects.all()
+
+        for product in products:
+            versions = Version.objects.filter(product=product)
+            activity = versions.filter(attribute_bul=True)
+            if activity:
+                product.activ_version = activity.last().name
+            else:
+                product.activ_version = 'Нет активной версии'
+
+        context['product_list'] = products
         context['title_name'] = 'Store'
         return context
 
