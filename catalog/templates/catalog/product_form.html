@@ -3,9 +3,13 @@
 {% block content %}
 <div class="row">
     <div class="col-6 mx-auto">
-        <div class="card">
-            <div class="card-body">
-                <form method="post" enctype="multipart/form-data">
+
+        <form method="post" enctype="multipart/form-data">
+            <div class="text-center">
+                <p class="mt-4">Изменить данные товара:</p>
+            </div>
+            <div class="card">
+                <div class="card-body">
                     {% csrf_token %}
                     {{ form.as_p }}
                     <button type="submit" class="btn btn-success">
@@ -15,9 +19,20 @@
                         Создать
                         {% endif %}
                     </button>
-                </form>
+                </div>
             </div>
-        </div>
+            <div class="text-center">
+                <p class="mt-4">Измените версию товара при желании:</p>
+            </div>
+            <div class="card m-4">
+                <div class="card-body">
+                    {{ formset.management_form }}
+                    {% for form in formset.forms %}
+                    {{ form.as_p }}
+                    {% endfor %}
+                </div>
+            </div>
+        </form>
     </div>
 </div>
 {% endblock %}

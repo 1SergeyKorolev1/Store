@@ -1,5 +1,5 @@
 from django import forms
-from catalog.models import Product
+from catalog.models import Product, Version
 
 valid_list = ['казино', 'криптовалюта', 'крипта', 'биржа', 'дешево', 'бесплатно', 'обман', 'полиция', 'радар']
 class StyleFormMixin:
@@ -30,9 +30,17 @@ class ProductForm(StyleFormMixin, forms.ModelForm):
 
     def clean_description(self):
         cleaned_data: str = self.cleaned_data['description']
-
+        if cleaned_data == None:
+            cleaned_data = 'описание отсутствует'
         for word in valid_list:
             if word.lower() in cleaned_data.lower():
                 raise forms.ValidationError('Описание не прошло валидацию')
 
         return cleaned_data
+
+class VersionForm(StyleFormMixin, forms.ModelForm):
+    class Meta:
+        model = Version
+        # fields = '__all__'
+        fields = ('name', 'product', 'number', 'attribute_bul')
+        # exclude = ('name')
