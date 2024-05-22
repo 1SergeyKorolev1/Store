@@ -1,13 +1,15 @@
 import secrets
+from random import randint
+
 from config.settings import EMAIL_HOST_USER
 from django.core.mail import send_mail
 from django.urls import reverse_lazy, reverse
 
 from users.forms import UserRegisterForm
 from django.shortcuts import render, get_object_or_404, redirect
-from django.views.generic import CreateView, UpdateView
+from django.views.generic import CreateView, UpdateView, TemplateView
 from users.models import User
-from users.forms import UserProfileForm
+from users.forms import UserProfileForm, RecoverPasswordForm
 
 # Create your views here.
 
@@ -47,3 +49,22 @@ class ProfileView(UpdateView):
 
     def get_object(self, queryset=None):
         return self.request.user
+
+def recovery_password(request):
+    if request.method == "POST":
+        email = request.POST.get("email")
+        user = User.objects.get(email=email)
+        new_password = "".join([str(randint(0, 9)) for i_ in range(8)])
+        send_mail(
+            "Восстановление доступа",
+            f"Ваш новый пароль : {new_password}",
+            EMAIL_HOST_USER,
+            [user.email]
+        )
+        user.set_password(new_password)
+        user.save()
+        return redirect(reverse("users:login"))
+    else:
+        form = RecoverPasswordForm
+        context = {"form": form}
+        return render(request, "users/recovery_password_form.html", context)

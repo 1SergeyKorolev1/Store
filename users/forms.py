@@ -18,3 +18,8 @@ class UserProfileForm(StyleFormMixin, UserChangeForm):
         super().__init__(*args, **kwargs)
 
         self.fields['password'].widget = forms.HiddenInput()
+
+class RecoverPasswordForm(StyleFormMixin, forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ('email',)
