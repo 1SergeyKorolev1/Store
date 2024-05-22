@@ -1,6 +1,9 @@
 from django.db import models
 
+from users.models import User
+
 NULLABLE = {'blank': True, 'null': True}
+
 
 class Category(models.Model):
     name = models.CharField(max_length=150, verbose_name='название')
@@ -23,6 +26,9 @@ class Product(models.Model):
     price = models.FloatField(verbose_name='цена', **NULLABLE)
     created_at = models.DateField(verbose_name='дата создания', **NULLABLE)
     updated_at = models.DateField(verbose_name='дата обновления', **NULLABLE)
+
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, help_text='укажите владельца', verbose_name='владелец',
+                              **NULLABLE)
 
     def __str__(self):
         # Строковое отображение объекта

@@ -9,6 +9,7 @@
                 <p class="card-text">Категория: {{ product.category.name|title }}</p>
                 <p class="text-body-secondary">{{ product.price }} руб.</p>
                 <p class="text-body-secondary">{{ product.activ_version }}</p>
+                {% if user.is_authenticated %}
                 <div class="">
                     <div class="">
                         <a type="button" class="btn btn-sm btn-outline-secondary"
@@ -19,6 +20,7 @@
                            href="{% url 'catalog:product_delete' product.pk %}">Удалить</a>
                     </div>
                 </div>
+                {% endif %}
             </div>
         </div>
     </div>
