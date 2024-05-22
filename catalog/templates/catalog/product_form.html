@@ -21,6 +21,7 @@
                     </button>
                 </div>
             </div>
+            {% if versions > 0 %}
             <div class="text-center">
                 <p class="mt-4">Измените версию товара при желании:</p>
             </div>
@@ -32,6 +33,7 @@
                     {% endfor %}
                 </div>
             </div>
+            {% endif %}
         </form>
     </div>
 </div>

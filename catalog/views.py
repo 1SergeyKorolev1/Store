@@ -13,6 +13,7 @@ from catalog.models import Product, Version, Category
 # Create your views here.
 class ProductListView(ListView):
     model = Product
+    extra_context = {'title_name': 'Store',}
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
@@ -28,7 +29,6 @@ class ProductListView(ListView):
                 product.activ_version = '... версии отсутствуют'
 
         context['product_list'] = products
-        context['title_name'] = 'Store'
         context['category_list'] = category
         return context
 
@@ -46,12 +46,12 @@ class ProductUpdateView(UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         VersionFormset = inlineformset_factory(Product, Version, form=VersionForm, extra=0)
-        products = Product.objects.all()
+        versions = Version.objects.filter(product=self.object)
         if self.request.method == 'POST':
             context['formset'] = VersionFormset(self.request.POST, instance=self.object)
         else:
             context['formset'] = VersionFormset(instance=self.object)
-
+        context['versions'] = len(versions)
         return context
     
     def form_valid(self, form):
@@ -75,6 +75,13 @@ class ProductCreateView(CreateView):
     form_class = ProductForm
     # fields = ('name', 'category', 'price', 'image')
     success_url = reverse_lazy('catalog:home')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data()
+        versions = Version.objects.filter(product=self.object)
+        context['version'] = len(versions)
+
+        return context
 
 class VersionCreateView(CreateView):
     model = Version
