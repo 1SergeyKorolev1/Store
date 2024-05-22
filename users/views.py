@@ -5,8 +5,9 @@ from django.urls import reverse_lazy, reverse
 
 from users.forms import UserRegisterForm
 from django.shortcuts import render, get_object_or_404, redirect
-from django.views.generic import CreateView
+from django.views.generic import CreateView, UpdateView
 from users.models import User
+from users.forms import UserProfileForm
 
 # Create your views here.
 
@@ -38,3 +39,11 @@ def email_verification(request, token):
     user.is_active = True
     user.save()
     return redirect(reverse('users:login'))
+
+class ProfileView(UpdateView):
+    model = User
+    form_class = UserProfileForm
+    success_url = reverse_lazy('users:profile')
+
+    def get_object(self, queryset=None):
+        return self.request.user
