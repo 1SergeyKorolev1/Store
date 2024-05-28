@@ -27,6 +27,8 @@ class Product(models.Model):
     created_at = models.DateField(verbose_name='дата создания', **NULLABLE)
     updated_at = models.DateField(verbose_name='дата обновления', **NULLABLE)
 
+    product_activ = models.BooleanField(verbose_name='признак публикации', default=False)
+
     owner = models.ForeignKey(User, on_delete=models.CASCADE, help_text='укажите владельца', verbose_name='владелец',
                               **NULLABLE)
 
@@ -37,6 +39,11 @@ class Product(models.Model):
     class Meta:
         verbose_name = 'Товар'  # Настройка для наименования одного объекта
         verbose_name_plural = 'Товары'  # Настройка для наименования набора объектов
+        permissions = [
+            ('can_edit_description', 'Can edit description'),
+            ('can_edit_category', 'Can edit Category'),
+            ('can_edit_product_activ', 'Can edit Product_activ')
+        ]
 
 
 class Version(models.Model):

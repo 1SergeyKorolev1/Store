@@ -14,11 +14,11 @@
                         <a type="button" class="btn btn-sm btn-outline-secondary"
                            href="{% url 'catalog:product_detail' product.pk %}">Подробнее</a>
                         {% if user.is_authenticated %}
-                        {% if perms.catalog.change_product or user == product.owner %}
+                        {% if perms.catalog.can_edit_description or user == product.owner %}
                         <a type="button" class="btn btn-sm btn-outline-secondary"
                            href="{% url 'catalog:product_update' product.pk %}">Редактировать</a>
                         {% endif %}
-                        {% if user.is_superuser %}
+                        {% if user.is_superuser or user == product.owner %}
                         <a type="button" class="btn btn-sm btn-outline-secondary"
                            href="{% url 'catalog:product_delete' product.pk %}">Удалить</a>
                         {% endif %}

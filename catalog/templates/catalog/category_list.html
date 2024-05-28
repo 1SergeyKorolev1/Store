@@ -1,0 +1,18 @@
+{% extends 'catalog/base.html' %}
+{% load my_tags %}
+{% block content %}
+<div class="pricing-header p-3 pb-md-4 mx-auto text-center col-10">
+    <h2 class="display-4 fw-normal">{{ title_name|title }}</h2>
+</div>
+<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3  col-10 mx-auto">
+    {% for object in categories %}
+    <div class="col">
+        <div class="card shadow-sm" style="min-width: 304px;">
+            <div class="card-body">
+                <p class="card-text">{{ object|title }}</p>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

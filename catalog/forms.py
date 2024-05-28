@@ -17,7 +17,7 @@ class ProductForm(StyleFormMixin, forms.ModelForm):
     class Meta:
         model = Product
         # fields = '__all__'
-        fields = ('name', 'category', 'price', 'image', 'description')
+        fields = ('name', 'category', 'price', 'image', 'description', 'owner', 'product_activ')
         # exclude = ('name')
 
     def clean_name(self):
@@ -28,6 +28,21 @@ class ProductForm(StyleFormMixin, forms.ModelForm):
                 raise forms.ValidationError('Название не прошло валидацию')
 
         return cleaned_data
+
+    def clean_description(self):
+        cleaned_data: str = self.cleaned_data['description']
+        if cleaned_data == None:
+            cleaned_data = 'описание отсутствует'
+        for word in valid_list:
+            if word.lower() in cleaned_data.lower():
+                raise forms.ValidationError('Описание не прошло валидацию')
+
+        return cleaned_data
+
+class ProductModeratorForm(StyleFormMixin, forms.ModelForm):
+    class Meta:
+        model = Product
+        fields = ('category', 'description', 'product_activ')
 
     def clean_description(self):
         cleaned_data: str = self.cleaned_data['description']
