@@ -1,7 +1,7 @@
 import json
 import os
 
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin, UserPassesTestMixin
 from django.forms import inlineformset_factory
 from django.shortcuts import render
 from django.urls import reverse_lazy
@@ -12,9 +12,10 @@ from catalog.models import Product, Version, Category
 
 
 # Create your views here.
-class ProductListView(ListView):
+class ProductListView(LoginRequiredMixin, ListView):
     model = Product
     extra_context = {'title_name': 'Store',}
+    # permission_required = 'catalog.view_student'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
@@ -34,13 +35,14 @@ class ProductListView(ListView):
         return context
 
 
-class ProductDetailView(DetailView, LoginRequiredMixin):
+class ProductDetailView(LoginRequiredMixin, DetailView):
     model = Product
 
 
-class ProductUpdateView(UpdateView, LoginRequiredMixin):
+class ProductUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     model = Product
     form_class = ProductForm
+    permission_required = 'catalog.change_product'
     # fields = ('name', 'category', 'price', 'image')
     success_url = reverse_lazy('catalog:home')
 
@@ -66,14 +68,19 @@ class ProductUpdateView(UpdateView, LoginRequiredMixin):
         return super().form_valid(form)
 
 
-class ProductDeleteView(DeleteView, LoginRequiredMixin):
+class ProductDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Product
     success_url = reverse_lazy('catalog:home')
+    # permission_required = 'catalog.delete_product'
+
+    def test_func(self):
+        return self.request.user.is_superuser
 
 
-class ProductCreateView(CreateView, LoginRequiredMixin):
+class ProductCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     model = Product
     form_class = ProductForm
+    permission_required = 'catalog.add_product'
     # fields = ('name', 'category', 'price', 'image')
     success_url = reverse_lazy('catalog:home')
 
@@ -91,7 +98,7 @@ class ProductCreateView(CreateView, LoginRequiredMixin):
         product.save()
         return super().form_valid(form)
 
-class VersionCreateView(CreateView, LoginRequiredMixin):
+class VersionCreateView(LoginRequiredMixin, CreateView):
     model = Version
     form_class = VersionForm
     # fields = ('name', 'category', 'price', 'image')

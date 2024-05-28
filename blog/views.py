@@ -1,3 +1,4 @@
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.urls import reverse_lazy, reverse
 from django.views.generic import CreateView, ListView, DetailView, UpdateView, DeleteView
 from blog.functions.email_yandex import send_message_mail
@@ -6,9 +7,10 @@ from blog.forms import PublicationForm
 from blog.models import Publication
 
 # Create your views here.
-class PublicationCreateView(CreateView):
+class PublicationCreateView(PermissionRequiredMixin, CreateView):
     model = Publication
     form_class = PublicationForm
+    permission_required = 'blog.add_publication'
     # fields = ('name', 'description', 'image', 'publication_activ', 'counter')
     success_url = reverse_lazy('blog:list')
 
@@ -20,7 +22,7 @@ class PublicationCreateView(CreateView):
 
         return super().form_valid(form)
 
-class PublicationListView(ListView):
+class PublicationListView(LoginRequiredMixin, ListView):
     model = Publication
 
     def get_queryset(self, *args, **kwargs):
@@ -39,9 +41,10 @@ class PublicationDetailView(DetailView):
             send_message_mail(emails=['Sergo77644@yandex.ru',], text=f'Ура! - публикация <{self.object}> набрала 100 просмотров...')
         return self.object
 
-class PublicationUpdateView(UpdateView):
+class PublicationUpdateView(PermissionRequiredMixin, UpdateView):
     model = Publication
     form_class = PublicationForm
+    permission_required = 'blog.change_publication'
     # fields = ('name', 'description', 'image', 'publication_activ', 'counter')
     success_url = reverse_lazy('blog:list')
 
@@ -56,6 +59,7 @@ class PublicationUpdateView(UpdateView):
     def get_success_url(self):
         return reverse('blog:view', args=[self.kwargs.get('pk')])
 
-class PublicationDeleteView(DeleteView):
+class PublicationDeleteView(PermissionRequiredMixin, DeleteView):
     model = Publication
     success_url = reverse_lazy('blog:list')
+    permission_required = 'blog.delete_publication'
