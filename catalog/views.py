@@ -2,20 +2,27 @@ import json
 import os
 
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin, UserPassesTestMixin
+from django.core.exceptions import PermissionDenied
 from django.forms import inlineformset_factory
 from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import CreateView, ListView, DetailView, UpdateView, DeleteView
-from catalog.forms import ProductForm, VersionForm
+
+from catalog.forms import ProductForm, VersionForm, ProductModeratorForm
 from catalog.models import Product, Version, Category
 
 
 # Create your views here.
 class ProductListView(LoginRequiredMixin, ListView):
     model = Product
-    extra_context = {'title_name': 'Store',}
-    # permission_required = 'catalog.view_student'
+    extra_context = {'title_name': 'Store', }
+
+    # permission_required = 'catalog.view_product'
+    # def get_queryset(self, *args, **kwargs):
+    #     queryset = super().get_queryset(*args, **kwargs)
+    #     queryset = queryset.filter(product_activ=True)
+    #     return queryset
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
@@ -30,7 +37,9 @@ class ProductListView(LoginRequiredMixin, ListView):
             else:
                 product.activ_version = '... версии отсутствуют'
 
-        context['product_list'] = products
+        queryset = products.filter(product_activ=True)
+
+        context['product_list'] = queryset
         context['category_list'] = category
         return context
 
@@ -56,7 +65,7 @@ class ProductUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView)
             context['formset'] = VersionFormset(instance=self.object)
         context['versions'] = len(versions)
         return context
-    
+
     def form_valid(self, form):
         formset = self.get_context_data()['formset']
 
@@ -64,13 +73,23 @@ class ProductUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView)
         if formset.is_valid():
             formset.instance = self.object
             formset.save()
-            
+
         return super().form_valid(form)
+
+    def get_form_class(self):
+        user = self.request.user
+        if user == self.object.owner or user.is_superuser:
+            return ProductForm
+        if user.has_perm('catalog.can_edit_description') and user.has_perm(
+                'catalog.can_edit_category') and user.has_perm('catalog.can_edit_product_activ'):
+            return ProductModeratorForm
+        raise PermissionDenied
 
 
 class ProductDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Product
     success_url = reverse_lazy('catalog:home')
+
     # permission_required = 'catalog.delete_product'
 
     def test_func(self):
@@ -97,6 +116,7 @@ class ProductCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView)
         product.owner = user
         product.save()
         return super().form_valid(form)
+
 
 class VersionCreateView(LoginRequiredMixin, CreateView):
     model = Version
