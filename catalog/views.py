@@ -1,6 +1,6 @@
 import json
 import os
-
+from catalog.services import get_categories_from_cache
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin, UserPassesTestMixin
 from django.forms import inlineformset_factory
 from django.shortcuts import render
@@ -33,6 +33,14 @@ class ProductListView(LoginRequiredMixin, ListView):
         context['product_list'] = products
         context['category_list'] = category
         return context
+
+class CategoryListView(ListView):
+    model = Category
+    categories = Category.objects.all()
+    extra_context = {'title_name': 'Категории'}
+
+    def get_queryset(self):
+        return get_categories_from_cache()
 
 
 class ProductDetailView(LoginRequiredMixin, DetailView):
@@ -74,7 +82,7 @@ class ProductDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     # permission_required = 'catalog.delete_product'
 
     def test_func(self):
-        return self.request.user.is_superuser
+        return self.request.user.is_superuser()
 
 
 class ProductCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
